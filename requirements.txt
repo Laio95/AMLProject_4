@@ -1,4 +1,7 @@
 --extra-index-url https://download.pytorch.org/whl/cu128
 torch
 torchvision
+albumentations
 numpy
+scikit-image
+ever-beta==0.2.3

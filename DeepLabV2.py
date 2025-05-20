@@ -39,7 +39,7 @@ class ASPP(nn.Module):
 
 # Removes the classifier from ResNet and adjusts convolutions for the dilated backbone
 def resnet101_backbone_dilated():
-    model = resnet101(pretrained=True)
+    model = resnet101(weights = "IMAGENET1K_V2")
     layers = list(model.children())
 
     # Modify dilation for conv4 and conv5
@@ -80,5 +80,7 @@ class DeepLabV2(nn.Module):
         features = self.backbone(x)
         aspp_out = self.aspp(features)
         out = self.classifier(aspp_out)
+        # Note: it's unclear in the paper if the bilinear interpolate is to use both for training (and therefore included in the loss function) or just for test/val
+        # In this implementation, bilinear is used every time. The output is then subsampled only for the loss function during training (externally)
         out = F.interpolate(out, size=(h, w), mode='bilinear', align_corners=False)
         return out
