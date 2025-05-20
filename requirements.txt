@@ -5,3 +5,11 @@ albumentations
 numpy
 scikit-image
 ever-beta==0.2.3
+
+# PIDnet
+tensorboardX
+opencv-python
+Pillow
+yacs
+tqdm
+thop
