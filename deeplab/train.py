@@ -12,12 +12,14 @@ from deeplabv2 import DeepLabV2
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+# downsample size and batchsize can greatly vary the memory usage of the model.
+# (256,256) with batchsize 3 does fit in 8GB of VRAM
 downsample_size = (256,256)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", type=str, choices=["rural", "urban"], required=True, help="Dataset to use")
-    parser.add_argument("--batchsize", type=int, required=False, default=10)
+    parser.add_argument("--batchsize", type=int, required=False, default=3)
     parser.add_argument("--numepoch", type=int, required=False, default=20)
     parser.add_argument("--lr", type=float, required=False, default=1e-3)
     parser.add_argument("--lrdecay", type=str,choices=["none", "step", "poly"], required=False, default="none")
@@ -37,12 +39,12 @@ if __name__ == "__main__":
 
     train_dataset = loveDAcustom(os.path.join(train_dataset_path,"images_png"), os.path.join(train_dataset_path,"masks_png"),transform)
 
-    print(f"load {len(train_dataset)} images")
+    print(f"loaded {len(train_dataset)} images")
 
     
     train_loader = DataLoader(train_dataset, batch_size=args.batchsize, shuffle=True,num_workers=1)
 
-    model = DeepLabV2(n_classes=7+1).to(device)  # 0 (ignore), 1-6 (class)
+    model = DeepLabV2(n_classes=7+1).to(device)  # 0 (ignore), 1-7 (class)
     criterion = nn.CrossEntropyLoss(ignore_index=0)
     optimizer = torch.optim.SGD(model.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-4)
 
