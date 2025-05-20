@@ -63,7 +63,7 @@ def resnet101_backbone_dilated():
         elif isinstance(m, nn.Conv2d):
             m.stride = (1, 1)
 
-    backbone = nn.Sequential(*layers[:7])  # up to conv5_x
+    backbone = nn.Sequential(*layers[:8])  # up to conv5_x
     return backbone
 
 
@@ -78,7 +78,9 @@ class DeepLabV2(nn.Module):
     def forward(self, x):
         h, w = x.size(2), x.size(3)
         features = self.backbone(x)
+
         aspp_out = self.aspp(features)
+
         out = self.classifier(aspp_out)
         # Note: it's unclear in the paper if the bilinear interpolate is to use both for training (and therefore included in the loss function) or just for test/val
         # In this implementation, bilinear is used every time. The output is then subsampled only for the loss function during training (externally)

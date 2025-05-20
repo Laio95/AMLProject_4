@@ -49,7 +49,11 @@ class loveDAcustom(Dataset):
 
         if self.transform:
             image = self.transform(image)
-            #mask = TF.resize(mask, (224, 224), interpolation=Image.NEAREST)
+            if isinstance(image, torch.Tensor):
+                image_size =( image.shape[1], image.shape[2] ) #H and W  
+            else:
+                image_size = image.size
+            mask = TF.resize(mask, image_size, interpolation=Image.NEAREST)
             mask = torch.from_numpy(np.array(mask)).long()
 
         return image, mask
