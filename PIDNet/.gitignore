@@ -1,0 +1,7 @@
+# Igore local dataset folder
+data\LoveDA
+
+# Logs and output
+log
+tools\logs
+output
