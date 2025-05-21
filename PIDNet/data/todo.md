@@ -1,1 +1,0 @@
-aggiungere dataset e liste
