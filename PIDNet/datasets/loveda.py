@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from PIL import Image
+import cv2
 
 from .base_dataset import BaseDataset
 
@@ -63,20 +63,36 @@ class LoveDA(BaseDataset):
                 })
             
         return files
+    
+    def convert_label(self, label, inverse=False):
+        temp = label.copy()
+        if inverse:
+            for v, k in self.label_mapping.items():
+                label[temp == k] = v
+        else:
+            for k, v in self.label_mapping.items():
+                label[temp == k] = v
+        return label
 
     def __getitem__(self, index):
         item = self.files[index]
         name = item["name"]
-        image = Image.open(os.path.join(self.root,'camvid',item["img"])).convert('RGB')
-        image = np.array(image)
+        image = cv2.imread(os.path.join(self.root,'loveda',item["img"]),
+                           cv2.IMREAD_COLOR)
         size = image.shape
+        
+        if 'test' in self.list_path:
+            # TODO vedere sta funzione
+            # image = self.input_transform(image)
+            # image = image.transpose((2, 0, 1))
+            return image.copy(), np.array(size), name
 
-        color_map = Image.open(os.path.join(self.root,'camvid',item["label"])).convert('RGB')
-        color_map = np.array(color_map)
-        label = self.color2label(color_map)
+        label = cv2.imread(os.path.join(self.root,'loveda',item["label"]),
+                           cv2.IMREAD_GRAYSCALE)
+        label = self.convert_label(label)
 
         image, label, edge = self.gen_sample(image, label, 
-                                self.multi_scale, self.flip, edge_pad=False,
+                                self.multi_scale, self.flip,
                                 edge_size=self.bd_dilate_size, city=False)
 
         return image.copy(), label.copy(), edge.copy(), np.array(size), name
