@@ -5,6 +5,36 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from PIL import Image
 
+def show_prediction_and_groundtruth(img, ground_truth_mask, prediction_mask):
+    alpha=0.5
+    # Colori per classi 0-5
+    colors = [
+        (0, 0, 0, 0),               # Classe 0 - trasparente  none
+        (0.5, 0.5, 0.5, alpha),     # Classe 1 - ciano        background
+        (1, 0, 0, alpha),           # Classe 2 - rosso        building
+        (1, 1, 0, alpha),           # Classe 3 - giallo       road  
+        (0, 0, 1, alpha),           # Classe 4 - blu          water 
+        (1, 0, 1, alpha),           # Classe 5 - magenta      barren
+        (0, 1, 0, alpha),           # Classe 6 - verde        forest
+        (0.3, 0.5, 0.3, alpha),     # Classe 7 - arancione    agricolture
+    ]
+    cmap = ListedColormap(colors)
+    fig, axs = plt.subplots(1, 2, figsize=(16, 8))
+
+    axs[0].imshow(img)
+    axs[0].imshow(prediction_mask, cmap=cmap, vmin=0, vmax=7, interpolation='nearest')
+    axs[0].set_title(f'Immagine con predizione')
+    axs[0].axis('off')
+
+    axs[1].imshow(img)
+    axs[1].imshow(ground_truth_mask, cmap=cmap, vmin=0, vmax=7, interpolation='nearest')
+    axs[1].set_title(f'Immagine ground truth')
+    axs[1].axis('off')
+
+    plt.tight_layout()
+    plt.show()
+
+
 def visualizza_maschera(num_img, base_path=r'..\dataset\train\urban', alpha=0.5):
     """
     Visualizza l'immagine con la maschera sovrapposta.
@@ -24,14 +54,14 @@ def visualizza_maschera(num_img, base_path=r'..\dataset\train\urban', alpha=0.5)
     
     # Colori per classi 0-5
     colors = [
-        (0, 0, 0, 0),         # Classe 0 - trasparente  none
+        (0, 0, 0, 0),               # Classe 0 - trasparente  none
         (0.5, 0.5, 0.5, alpha),     # Classe 1 - ciano        background
-        (1, 0, 0, alpha),     # Classe 2 - rosso        building
-        (1, 1, 0, alpha),     # Classe 3 - giallo       road  
-        (0, 0, 1, alpha),     # Classe 4 - blu          water 
-        (1, 0, 1, alpha),     # Classe 5 - magenta      barren
-        (0, 1, 0, alpha),     # Classe 6 - verde        forest
-        (0.3, 0.5, 0.3, alpha),   # Classe 7 - arancione    agricolture
+        (1, 0, 0, alpha),           # Classe 2 - rosso        building
+        (1, 1, 0, alpha),           # Classe 3 - giallo       road  
+        (0, 0, 1, alpha),           # Classe 4 - blu          water 
+        (1, 0, 1, alpha),           # Classe 5 - magenta      barren
+        (0, 1, 0, alpha),           # Classe 6 - verde        forest
+        (0.3, 0.5, 0.3, alpha),     # Classe 7 - arancione    agricolture
     ]
     cmap = ListedColormap(colors)
 

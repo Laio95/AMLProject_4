@@ -76,7 +76,9 @@ class DeepLabV2(nn.Module):
         self.classifier = nn.Conv2d(512, n_classes, kernel_size=1)
 
     def forward(self, x):
-        h, w = x.size(2), x.size(3)
+        
+        h, w = x.shape[-2], x.shape[-1]
+
         features = self.backbone(x)
 
         aspp_out = self.aspp(features)
