@@ -78,7 +78,7 @@ class LoveDA(BaseDataset):
     def __getitem__(self, index):
         item = self.files[index]
         name = item["name"]
-        image = cv2.imread(os.path.join(self.root,'loveda',item["img"]),
+        image = cv2.imread(os.path.join(self.root,'LoveDA',item["img"]),
                            cv2.IMREAD_COLOR)
         size = image.shape
         
@@ -88,7 +88,7 @@ class LoveDA(BaseDataset):
             # image = image.transpose((2, 0, 1))
             return image.copy(), np.array(size), name
 
-        label = cv2.imread(os.path.join(self.root,'loveda',item["label"]),
+        label = cv2.imread(os.path.join(self.root,'LoveDA',item["label"]),
                            cv2.IMREAD_GRAYSCALE)
         label = self.convert_label(label)
 
